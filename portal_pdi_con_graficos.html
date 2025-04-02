@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Desarrollo Individual (PDI)</title>
+    <!-- Incluir Chart.js para los gráficos dinámicos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="pdi_graficos.js"></script>
+    <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Desarrollo Individual (PDI)</title>
+    <style>
+        :root {
+            --primary-color: #1a4b84;
+            --secondary-color: #3a6ea5;
+            --accent-color: #c8a97e;
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            display: inline-block;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background-color: var(--accent-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #b69a6b;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Portal de Desarrollo Individual (PDI)</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#dashboard">Inicio</a></li>
+            <li><a href="#informe-cualitativo">Informe Cualitativo</a></li>
+            <li><a href="#evaluacion-competencial">Evaluación Competencial</a></li>
+            <li><a href="#fortalezas-mejoras">Fortalezas y Áreas de Mejora</a></li>
+            <li><a href="#pdi">Plan de Desarrollo Individual</a></li>
+            <li><a href="#seguimiento">Plan de Seguimiento</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="dashboard" class="section">
+            <h2>Bienvenido a tu Portal de Desarrollo Individual</h2>
+            <p>Este espacio está diseñado para acompañarte en tu crecimiento profesional, permitiéndote visualizar tus evaluaciones, establecer objetivos y dar seguimiento a tu progreso.</p>
+
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <h3>Informe Cualitativo</h3>
+                    </div>
+                    <p>Revisa tu evaluación cualitativa y descubre insights sobre tu desempeño profesional.</p>
+                    <a href="#informe-cualitativo" class="btn">Ver informe</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <h3>Evaluación Competencial</h3>
+                    </div>
+                    <p>Explora los resultados de tu evaluación de competencias y habilidades profesionales.</p>
+                    <a href="#evaluacion-competencial" class="btn">Ver evaluación</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📈</div>
+                        <h3>Fortalezas y Áreas de Mejora</h3>
+                    </div>
+                    <p>Visualiza gráficamente tus fortalezas y áreas de oportunidad para tu desarrollo.</p>
+                    <a href="#fortalezas-mejoras" class="btn">Ver gráficos</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <h3>Plan de Desarrollo Individual</h3>
+                    </div>
+                    <p>Consulta y actualiza tu PDI con objetivos SMART y acciones concretas.</p>
+                    <a href="#pdi" class="btn">Ver PDI</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📅</div>
+                        <h3>Plan de Seguimiento</h3>
+                    </div>
+                    <p>Da seguimiento a tu progreso y mantén actualizados tus avances.</p>
+                    <a href="#seguimiento" class="btn">Ver seguimiento</a>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Progreso general del PDI</span>
+                    <span>45%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45%;"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Progreso general del PDI</h3>
+                <div class="chart-container">
+                    <!-- Gráfico de línea para el progreso general -->
+                    <canvas id="graficoProgresoGeneral"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Próximas actividades</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Actividad</th>
+                            <th>Fecha límite</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Curso de gestión del tiempo</td>
+                            <td>15/04/2025</td>
+                            <td>Pendiente</td>
+                        </tr>
+                        <tr>
+                            <td>Reunión de seguimiento trimestral</td>
+                            <td>30/04/2025</td>
+                            <td>Programada</td>
+                        </tr>
+                        <tr>
+                            <td>Actualización de objetivos SMART</td>
+                            <td>10/05/2025</td>
+                            <td>Pendiente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="informe-cualitativo" class="section">
+            <h2>Informe Cualitativo</h2>
+
+            <div class="tabs">
+                <div class="tab active">Resumen</div>
+                <div class="tab">Tareas y Satisfacción</div>
+                <div class="tab">Intereses y Fortalezas</div>
+                <div class="tab">Aspiraciones</div>
+                <div class="tab">Desarrollo y Obstáculos</div>
+                <div class="tab">Alineación con Objetivos</div>
+            </div>
+
+            <div class="tab-content active">
+                <h3>Resumen del Informe Cualitativo</h3>
+                <p>Este informe resume las respuestas proporcionadas en el cuestionario cualitativo, ofreciendo una visión integral de tu situación profesional actual, aspiraciones y áreas de desarrollo.</p>
+
+                <div class="form-group">
+                    <label>Estado del informe:</label>
+                    <select>
+                        <option>Completado</option>
+                        <option>En proceso</option>
+                        <option>Pendiente</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de realización:</label>
+                    <input type="date" value="2025-03-15">
+                </div>
+
+                <div class="form-group">
+                    <label>Comentarios generales:</label>
+                    <textarea rows="4" placeholder="Añade comentarios generales sobre el informe cualitativo..."></textarea>
+                </div>
+
+                <button class="btn">Descargar informe completo</button>
+            </div>
+        </section>
+
+        <section id="evaluacion-competencial" class="section">
+            <h2>Evaluación Competencial</h2>
+
+            <div class="tabs">
+                <div class="tab active">Resumen</div>
+                <div class="tab">Competencias Administrativas</div>
+                <div class="tab">Competencias de Gestión</div>
+                <div class="tab">Competencias Personales</div>
+                <div class="tab">Competencias Relacionales</div>
+                <div class="tab">Competencias Tecnológicas</div>
+            </div>
+
+            <div class="tab-content active">
+                <h3>Resumen de Evaluación Competencial</h3>
+                <p>Esta evaluación muestra tu nivel de desarrollo en las 5 matrices de competencias evaluadas, identificando fortalezas y áreas de mejora.</p>
+
+                <div class="chart-container">
+                    <!-- Gráfico de radar para las matrices competenciales -->
+                    <canvas id="graficoRadarCompetencias"></canvas>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <h3>Promedio por matriz</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Matriz Competencial</th>
+                                    <th>Puntuación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Competencias Administrativas y Normativas</td>
+                                    <td>3.0</td>
+                                </tr>
+                                <tr>
+                                    <td>Competencias de Gestión y Organización</td>
+                                    <td>3.4</td>
+                                </tr>
+                                <tr>
+                                    <td>Competencias Personales</td>
+                                    <td>3.2</td>
+                                </tr>
+                                <tr>
+                                    <td>Competencias Relacionales</td>
+                                    <td>3.18</td>
+                                </tr>
+                                <tr>
+                                    <td>Competencias Tecnológicas y de Innovación</td>
+                                    <td>2.36</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h3>Promedio general</h3>
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="font-size: 4rem; color: var(--primary-color);">3.07</div>
+                            <p>sobre 5.0</p>
+                        </div>
+                        <p>Este promedio indica un nivel de desarrollo medio en el conjunto de competencias evaluadas.</p>
+                    </div>
+                </div>
+
+                <button class="btn">Descargar informe completo</button>
+            </div>
+        </section>
+
+        <section id="fortalezas-mejoras" class="section">
+            <h2>Fortalezas y Áreas de Mejora</h2>
+
+            <div class="grid-2">
+                <div>
+                    <h3>Principales Fortalezas</h3>
+                    <div class="chart-container">
+                        <!-- Gráfico de barras para las fortalezas -->
+                        <canvas id="graficoFortalezas"></canvas>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Competencia</th>
+                                <th>Puntuación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Seguridad informática y protección de datos</td>
+                                <td>4.0</td>
+                            </tr>
+                            <tr>
+                                <td>Atención a usuarios</td>
+                                <td>4.0</td>
+                            </tr>
+                            <tr>
+                                <td>Trabajo en equipo y colaboración</td>
+                                <td>4.0</td>
+                            </tr>
+                            <tr>
+                                <td>Capacidad de análisis y resolución de problemas</td>
+                                <td>3.67</td>
+                            </tr>
+                            <tr>
+                                <td>Liderazgo y trabajo en equipo</td>
+                                <td>3.67</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <h3>Principales Áreas de Mejora</h3>
+                    <div class="chart-container">
+                        <!-- Gráfico de barras para las áreas de mejora -->
+                        <canvas id="graficoAreasMejora"></canvas>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Competencia</th>
+                                <th>Puntuación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gestión de tiempos y tareas</td>
+                                <td>2.0</td>
+                            </tr>
+                            <tr>
+                                <td>Adaptación tecnológica</td>
+                                <td>2.33</td>
+                            </tr>
+                            <tr>
+                                <td>Innovación en procesos</td>
+                                <td>2.33</td>
+                            </tr>
+                            <tr>
+                                <td>Mejora continua</td>
+                                <td>2.33</td>
+                            </tr>
+                            <tr>
+                                <td>Conocimiento de normativa educativa</td>
+                                <td>2.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="pdi" class="section">
+            <h2>Plan de Desarrollo Individual (PDI)</h2>
+
+            <div class="tabs">
+                <div class="tab active">Resumen PDI</div>
+                <div class="tab">Objetivos SMART</div>
+                <div class="tab">Plan de Acción</div>
+                <div class="tab">Recursos</div>
+            </div>
+
+            <div class="tab-content active">
+                <h3>Resumen del Plan de Desarrollo Individual</h3>
+                <p>Tu PDI está diseñado para potenciar tus fortalezas y desarrollar las áreas de mejora identificadas en las evaluaciones, alineando tus objetivos profesionales con los de la organización.</p>
+
+                <div class="form-group">
+                    <label>Estado del PDI:</label>
+                    <select>
+                        <option>En progreso</option>
+                        <option>Completado</option>
+                        <option>Pendiente de aprobación</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de inicio:</label>
+                    <input type="date" value="2025-01-15">
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de finalización prevista:</label>
+                    <input type="date" value="2026-01-15">
+                </div>
+
+                <h3>Objetivos principales</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Competencia</th>
+                            <th>Nivel actual</th>
+                            <th>Nivel deseado</th>
+                            <th>Progreso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gestión de tiempos y tareas</td>
+                            <td>2.0</td>
+                            <td>3.5</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 30%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Adaptación tecnológica</td>
+                            <td>2.33</td>
+                            <td>3.5</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 40%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Innovación en procesos</td>
+                            <td>2.33</td>
+                            <td>3.5</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button class="btn">Descargar PDI completo</button>
+            </div>
+        </section>
+
+        <section id="seguimiento" class="section">
+            <h2>Plan de Seguimiento</h2>
+
+            <div class="tabs">
+                <div class="tab active">Resumen</div>
+                <div class="tab">Reuniones</div>
+                <div class="tab">Progreso</div>
+                <div class="tab">Ajustes</div>
+            </div>
+
+            <div class="tab-content active">
+                <h3>Resumen del Plan de Seguimiento</h3>
+                <p>El plan de seguimiento te permite monitorear tu progreso, registrar evidencias y realizar ajustes necesarios para alcanzar tus objetivos de desarrollo.</p>
+
+                <h3>Próximas reuniones de seguimiento</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Objetivo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>15/04/2025</td>
+                            <td>Trimestral</td>
+                            <td>Revisión de progreso en objetivos SMART</td>
+                            <td>Programada</td>
+                        </tr>
+                        <tr>
+                            <td>15/07/2025</td>
+                            <td>Trimestral</td>
+                            <td>Evaluación de medio término</td>
+                            <td>Pendiente</td>
+                        </tr>
+                        <tr>
+                            <td>15/10/2025</td>
+                            <td>Trimestral</td>
+                            <td>Ajuste de objetivos y plan de acción</td>
+                            <td>Pendiente</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Registro de progreso por competencia</h3>
+
+                <div class="form-group">
+                    <label>Selecciona una competencia:</label>
+                    <select>
+                        <option>Gestión de tiempos y tareas</option>
+                        <option>Adaptación tecnológica</option>
+                        <option>Innovación en procesos</option>
+                    </select>
+                </div>
+
+                <table id="tablaSeguimiento">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>% Avance</th>
+                            <th>Evidencias</th>
+                            <th>Obstáculos</th>
+                            <th>Ajustes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>15/02/2025</td>
+                            <td>15%</td>
+                            <td>Completado curso básico de gestión del tiempo</td>
+                            <td>Dificultad para aplicar técnicas en situaciones de alta presión</td>
+                            <td>Incorporar práctica diaria de técnica Pomodoro</td>
+                        </tr>
+                        <tr>
+                            <td>15/03/2025</td>
+                            <td>30%</td>
+                            <td>Implementación de sistema de priorización de tareas</td>
+                            <td>Interrupciones frecuentes</td>
+                            <td>Establecer horarios de "no interrupciones"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="form-group">
+                    <label>Añadir nueva entrada de seguimiento:</label>
+                    <div class="grid-2">
+                        <div>
+                            <label>Competencia:</label>
+                            <select id="seguimientoCompetencia">
+                                <option>Gestión de tiempos y tareas</option>
+                                <option>Adaptación tecnológica</option>
+                                <option>Innovación en procesos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Fecha:</label>
+                            <input type="date" id="seguimientoFecha">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>% Avance:</label>
+                            <input type="number" min="0" max="100" id="seguimientoAvance">
+                        </div>
+                        <div>
+                            <label>Evidencias de progreso:</label>
+                            <textarea rows="2" id="seguimientoEvidencias"></textarea>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Obstáculos encontrados:</label>
+                            <textarea rows="2" id="seguimientoObstaculos"></textarea>
+                        </div>
+                        <div>
+                            <label>Ajustes al plan:</label>
+                            <textarea rows="2" id="seguimientoAjustes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="agregarEntradaSeguimiento()">Guardar entrada</button>
+                <button class="btn btn-secondary" onclick="exportarSeguimiento()">Descargar historial de seguimiento</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Portal de Desarrollo Individual (PDI) | Desarrollado para el área PAS del Colegio</p>
+    </footer>
+
+    <!-- El script pdi_graficos.js ya está incluido en el head y contiene toda la funcionalidad necesaria -->
+</body>
+</html>
