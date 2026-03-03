@@ -1,0 +1,8 @@
+
+{
+  "name": "JustificaMarians - Gestión de Gastos",
+  "description": "Aplicación premium para la gestión y justificación de gastos de empleados con reconocimiento de tickets mediante IA (Gemini) y autenticación de Google.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
